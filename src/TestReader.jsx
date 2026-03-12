@@ -80,6 +80,27 @@ export default function RapidReader() {
   useEffect(() => { indexRef.current = index; }, [index]);
   useEffect(() => { wpmRef.current = baseWpm; }, [baseWpm]);
 
+  // Scrub progress bar
+  const isDragging = useRef(false);  // track if user is scrubbing
+  const wasPlaying = useRef(false);  // remember if reader was playing before drag
+  const progressBarRef = useRef(null); // ref to the progress bar container
+
+  const updateIndexFromEvent = (e) => {
+    if (!progressBarRef.current || !words.length) return;
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const ratio = Math.max(0, Math.min(1, x / rect.width));
+    const newIndex = Math.round(ratio * (words.length - 1));
+    setIndex(newIndex);
+    indexRef.current = newIndex;
+  };
+
+  const updateIndexFromTouch = (e) => {
+    const touch = e.touches[0];
+    if (!touch) return;
+    updateIndexFromEvent(touch);
+  };
+
   // Restore Session
   useEffect(() => {
     const restore = async () => {
@@ -269,6 +290,41 @@ export default function RapidReader() {
     setIndex(i => Math.max(0, i - skipAmount));
   };
 
+  // Keyboard Shortcuts
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (e.target.tagName === "INPUT") return;
+
+      switch (e.code) {
+        case "Space":
+          e.preventDefault();
+          playing ? pause() : play();
+          break;
+        case "KeyR":
+          reset();
+          break;
+        case "KeyC":
+          clear();
+          break;
+        case "ArrowRight":
+          faster();
+          break;
+        case "ArrowLeft":
+          slower();
+          break;
+        case "BracketRight":
+          skipForward();
+          break;
+        case "BracketLeft":
+          skipBack();
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [playing, words, index]);
+
   // Display
   const ORP_COLUMN = 300; // px from left, adjust to center in your displayBox
 
@@ -312,7 +368,7 @@ export default function RapidReader() {
       <button class="button-30" role="button" onClick={clear} disabled={!words.length} style={{ marginLeft: 10 + "px" }}>Clear</button>
       </div>
 
-      <h2>{title || "Load a PDF or EPUB"}</h2>
+      <h2 className="title">{title || "Load a PDF or EPUB"}</h2>
 
       <div className="displayBox">
         <div style={{position:"absolute", left:"50%", width:2, height:"100%", background:"#ddd", opacity:"0.1"}} />
@@ -335,12 +391,31 @@ export default function RapidReader() {
         <button class="button-30" role="button" onClick={faster}>Faster</button>
       </div>
 
-      <p className="shortcuts">Space = Play/Pause <span className="break">|</span> R = Reset <span className="break">|</span> ←/→ = Slow/Fast <span className="break">|</span> [ = Bck 10s <span className="break">|</span> ] = Fwd 10s</p>
+      <p className="shortcuts">Space = Play/Pause <span className="break">|</span> R = Reset <span className="break">|</span> ←/→ = Slow/Fast <span className="break">|</span> [ = Bck 10s <span className="break">|</span> ] = Fwd 10s<br />
+      Drag on bar to scrub progress</p>
 
-      <div className="progressBarContainer">
-        <div className="progressBar">
-          <div style={{width:`${progress}%`, height:10, background:"#9b0000"}} />
-        </div>
+      <div
+        ref={progressBarRef}
+        className="progressBarContainer"
+        style={{
+          position: "relative",
+          width: "80%",
+          margin: "20px auto",
+          height: 10,
+          background: "#ccc",
+          cursor: "pointer",
+        }}
+        // Mouse events
+        onMouseDown={(e) => { isDragging.current = true; wasPlaying.current = playing; pause(); updateIndexFromEvent(e); }}
+        onMouseMove={(e) => { if (isDragging.current) updateIndexFromEvent(e); }}
+        onMouseUp={() => { if (isDragging.current) { isDragging.current = false; if (wasPlaying.current) play(); } }}
+        onMouseLeave={() => { if (isDragging.current) { isDragging.current = false; if (wasPlaying.current) play(); } }}
+        // Touch events
+        onTouchStart={(e) => { isDragging.current = true; wasPlaying.current = playing; pause(); updateIndexFromTouch(e); }}
+        onTouchMove={(e) => { if (isDragging.current) updateIndexFromTouch(e); }}
+        onTouchEnd={() => { if (isDragging.current) { isDragging.current = false; if (wasPlaying.current) play(); } }}
+      >
+        <div style={{ width: `${progress}%`, height: "100%", background: "#9b0000" }} />
       </div>
 
        <div className="stats">

@@ -40,6 +40,12 @@ p {
   margin-bottom: -5px;
 }
 
+button {
+  margin: 5px;
+  border: none;
+  min-width: 80px;
+}
+
 @media (max-width: 600px) {
     body {
       scale: 0.75;

@@ -1,7 +1,7 @@
 {
   "name": "rapidreader",
   "private": true,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "homepage": "http://github.com/yourusername/rapidreader.git",
   "type": "module",
   "scripts": {
