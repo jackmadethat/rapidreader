@@ -326,22 +326,22 @@ export default function RapidReader() {
   }, [playing, words, index]);
 
   // Display
-  const ORP_COLUMN = 300; // px from left, adjust to center in your displayBox
+  function getTextWidth(text, font = "48px monospace") {
+    const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
+    const ctx = canvas.getContext("2d");
+    ctx.font = font;
+    return ctx.measureText(text).width;
+  }
 
   const renderWord = word => {
     const pivot = pivotIndex(word);
-
-    // Calculate left padding to center pivot letter
-    const charWidth = 24; // approximate width of monospace character in px
-    const wordOffset = pivot * charWidth;
-    const leftPadding = ORP_COLUMN - wordOffset - 65;
-
+    const leftWidth = getTextWidth(word.slice(0, pivot));
     return (
-      <div style={{ position: "relative", width: "100%", height: 60, marginTop: -15 + "px" }}>
+      <div style={{ position: "relative", width: "100%", height: 60, marginLeft: -24 + "px" }}>
         <span
           style={{
             position: "absolute",
-            left: `${leftPadding}px`,
+            left: `calc(50% - ${leftWidth}px)`,
             fontFamily: "monospace",
             fontSize: 48,
             whiteSpace: "nowrap",
