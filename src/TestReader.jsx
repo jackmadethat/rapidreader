@@ -48,15 +48,8 @@ function reconstructPageText(items) {
     if (!lines[y]) lines[y] = [];
     lines[y].push({ text: item.str, x: item.transform[4] });
   });
-  const sortedLines = Object.keys(lines)
-    .sort((a, b) => b - a)
-    .map(y => lines[y].sort((a,b) => a.x - b.x).map(w => w.text).join(" "));
-  return sortedLines
-    .join("\n")
-    .replace(/-\n/g, "")
-    .replace(/\n{2,}/g, "\n\n")
-    .replace(/\s+/g, " ")
-    .trim();
+  const sortedLines = Object.keys(lines).sort((a, b) => b - a).map(y => lines[y].sort((a,b) => a.x - b.x).map(w => w.text).join(" "));
+  return sortedLines.join("\n").replace(/-\n/g, "").replace(/\n{2,}/g, "\n\n").replace(/\s+/g, " ").trim();
 }
 
 // Helper (Spritz style pivot point)
@@ -126,11 +119,13 @@ export default function RapidReader() {
   const handleFile = async e => {
     const f = e.target.files[0];
     if (!f) return;
-
     let fFormat = null;
     if (f.type === "application/pdf") fFormat = "pdf";
     else if (f.name.endsWith(".epub")) fFormat = "epub";
-    else { alert("Unsupported file type"); return; }
+    else { 
+      alert("Unsupported file type"); 
+      return; 
+    }
 
     setFile(f);
     setFormat(fFormat);
@@ -217,9 +212,7 @@ export default function RapidReader() {
       tmp.innerHTML = html;
 
       // Extract <p> text, skip short/boilerplate pages
-      const paragraphs = Array.from(tmp.querySelectorAll("p"))
-        .map(p => p.textContent.trim())
-        .filter(t => t && !t.endsWith(".xhtml") && t.length > 5);
+      const paragraphs = Array.from(tmp.querySelectorAll("p")).map(p => p.textContent.trim()).filter(t => t && !t.endsWith(".xhtml") && t.length > 5);
 
       if (!paragraphs.length) continue;
 
@@ -245,15 +238,36 @@ export default function RapidReader() {
 
   const tick = () => {
     const i = indexRef.current;
-    if (i >= words.length-1) { setPlaying(false); return; }
+    if (i >= words.length-1) { 
+      setPlaying(false); 
+      return; 
+    }
     const delay = getDelay(words[i]);
-    timerRef.current = setTimeout(() => { setIndex(prev => prev+1); tick(); }, delay);
+    timerRef.current = setTimeout(() => { 
+      setIndex(prev => prev+1); 
+      tick(); 
+    }, delay);
   };
 
   // Controls
-  const play = () => { if (playing || !words.length) return; setPlaying(true); tick(); };
-  const pause = () => { setPlaying(false); clearTimeout(timerRef.current); };
-  const reset = () => { pause(); setIndex(0); indexRef.current=0; };
+  const play = () => { 
+    if (playing || !words.length) 
+      return; 
+    setPlaying(true); 
+    tick(); 
+  };
+
+  const pause = () => { 
+    setPlaying(false); 
+    clearTimeout(timerRef.current); 
+  };
+
+  const reset = () => { 
+    pause(); 
+    setIndex(0); 
+    indexRef.current=0; 
+  };
+
   const clear = () => {
     pause();
     setFile(null);
@@ -275,8 +289,17 @@ export default function RapidReader() {
     setEffectiveWpm(rounded);
   };
 
-  const faster = () => { const newWpm = baseWpm+50; setBaseWpm(newWpm); updateDisplayedWpm(newWpm); };
-  const slower = () => { const newWpm = Math.max(baseWpm-50,50); setBaseWpm(Math.max(baseWpm-50,50)); updateDisplayedWpm(Math.max(baseWpm-50,50)); };
+  const faster = () => { 
+    const newWpm = baseWpm+50; 
+    setBaseWpm(newWpm); 
+    updateDisplayedWpm(newWpm); 
+  };
+
+  const slower = () => { 
+    const newWpm = Math.max(baseWpm-50,50); 
+    setBaseWpm(Math.max(baseWpm-50,50)); 
+    updateDisplayedWpm(Math.max(baseWpm-50,50)); 
+  };
 
   // Skip 10s
   const wordsPerSecond = effectiveWpm / 60;
@@ -363,9 +386,9 @@ export default function RapidReader() {
   return (
     <div style={{ textAlign:"center", marginTop:40 }}>
       <div>
-      <label htmlFor="fileUpload" className="button-30" role="button">Browse</label>
-      <input id="fileUpload" type="file" accept=".pdf,.epub" onChange={handleFile} style={{ display: "none" }} />
-      <button class="button-30" role="button" onClick={clear} disabled={!words.length} style={{ marginLeft: 10 + "px" }}>Clear</button>
+        <label htmlFor="fileUpload" className="button-30" role="button">Browse</label>
+        <input id="fileUpload" type="file" accept=".pdf,.epub" onChange={handleFile} style={{ display: "none" }} />
+        <button class="button-30" role="button" onClick={clear} disabled={!words.length} style={{ marginLeft: 10 + "px" }}>Clear</button>
       </div>
 
       <h2 className="title">{title || "Load a PDF or EPUB"}</h2>
