@@ -337,7 +337,7 @@ export default function RapidReader() {
     const leftPadding = ORP_COLUMN - wordOffset - 65;
 
     return (
-      <div style={{ position: "relative", width: "100%", height: 60 }}>
+      <div style={{ position: "relative", width: "100%", height: 60, marginTop: -15 + "px" }}>
         <span
           style={{
             position: "absolute",
