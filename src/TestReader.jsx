@@ -6,7 +6,7 @@ import JSZip from "jszip";
 pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 
 // Database
-const DB_NAME = "spritz-reader";
+const DB_NAME = "rapidreader";
 const STORE = "session";
 
 function openDB() {
@@ -59,11 +59,11 @@ function reconstructPageText(items) {
     .trim();
 }
 
-// Helper (Spritz style)
+// Helper (Spritz style pivot point)
 const pivotIndex = (word) => Math.floor(Math.min(word.length, 13) * 0.4);
 
 // Component
-export default function SpritzReader() {
+export default function RapidReader() {
   const [file, setFile] = useState(null);
   const [format, setFormat] = useState(null); // "pdf" or "epub"
   const [title, setTitle] = useState("");

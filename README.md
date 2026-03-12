@@ -1,16 +1,23 @@
-# React + Vite
+# Rapid Reader
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Rapid Reader is a Spritz/Spreeder style speed reading tool made by me, a solo frontend developer, with some help from ChatGPT to parse EPUBs properly. The tool works entirely on the client with IndexedDB, no localstorage or external libraries.
 
-Currently, two official plugins are available:
+## Components
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React
+- Vite
+- EPUBjs
+- PDFjs
+- JSZip
 
-## React Compiler
+## Usage
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Simply browse for a PDF or EPUB file on your local device and click Play. It should work fine with 90-95% of PDF and EPUB files, even those with columns and unconventional formatting.
 
-## Expanding the ESLint configuration
+## Disclaimer
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+No patent or copyright infringement is intended - this is all original code inspired by proprietary speed reading tools.
+
+## Contact
+
+Send all feedback and questions to [jack.beven@gmx.com](mailto:jack.beven@gmx.com)
