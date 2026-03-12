@@ -1,15 +1,20 @@
 {
   "name": "rapidreader",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "homepage": "http://github.com/yourusername/rapidreader.git",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "epubjs": "^0.3.93",
+    "jszip": "^3.10.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
@@ -21,7 +26,9 @@
     "eslint": "^9.39.1",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
+    "gh-pages": "^6.3.0",
     "globals": "^16.5.0",
+    "pdfjs-dist": "^5.5.207",
     "vite": "^7.3.1"
   }
 }
